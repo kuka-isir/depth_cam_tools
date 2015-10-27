@@ -60,7 +60,7 @@ class ROSImageSubscriber(Thread):
         self.lock_ = Lock()
         self.loopy = rospy.Rate(loop_rate)
         if len(self.topics) == 1:
-            rospy.Subscriber(self.topics[0], Image,self.callback,queue_size=queue_size, buff_size=2**24)
+            rospy.Subscriber(self.topics[0], Image,self.callback,queue_size=queue_size)
             self.images.append(np.array([]))
         else:
             sub=[]
@@ -149,6 +149,8 @@ class ROSImageSubscriber(Thread):
                 if enc=='rgb8':
                     # Strange kinect exception
                     enc='bgr8'
+                if enc=='32FC1':
+                    enc='passthrough'
                     
                 if not self.has_received_first[i]:
                     self.has_received_first[i] = True
