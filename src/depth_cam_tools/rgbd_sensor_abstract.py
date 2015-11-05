@@ -2,7 +2,7 @@
 """
 Created on Tue Nov  3 16:54:36 2015
 
-@author: jimmy
+@author: Jimmy Da Silva <jimmy.dasilva@isir.upmc.fr>
 """
 from abc import ABCMeta, abstractmethod
 import rospy
@@ -34,7 +34,7 @@ def get_output_list(cmd,timeout=None):
                 break
     return list(filter(None, output))
 
-class RGBDSensorAbstract:
+class RGBDSensor:
     __metaclass__ = ABCMeta
     
     @classmethod

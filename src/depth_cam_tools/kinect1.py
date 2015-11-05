@@ -6,9 +6,9 @@ Created on Tue Nov 3 2015
 @author: Jimmy Da Silva <jimmy.dasilva@isir.upmc.fr>
 """
 
-from rgbd_sensor_abstract import RGBDSensorAbstract
+from rgbd_sensor_abstract import RGBDSensor
 
-class Kinect1(RGBDSensorAbstract):
+class Kinect1(RGBDSensor):
     def __init__(self, camera_name, use_rect = True , use_depth_registered = False, queue_size=1, compression=False):
         
         depth="depth"
@@ -31,6 +31,6 @@ class Kinect1(RGBDSensorAbstract):
         
         ir_topic = ''
             
-        super(RGBDSensorAbstract, RGBDSensorAbstract(camera_name, rgb_topic, depth_topic, ir_topic, use_depth_registered, queue_size, compression))
+        super(RGBDSensor, RGBDSensor(camera_name, rgb_topic, depth_topic, ir_topic, use_depth_registered, queue_size, compression))
         
         self.wait_until_ready()
