@@ -45,8 +45,8 @@ class RGBDSensor:
         self.camera_name = camera_name
         
         # Waiting for service to be available, like the camera calibrator 
-        camera_info_service = get_output_list("rosservice list | grep "+camera_name+" | grep set_camera_info",timeout=10.0)[0]
-        rospy.loginfo(self.camera_name+" waiting for "+camera_info_service)
+        camera_info_service = get_output_list("rosservice list | grep "+camera_name+"/",timeout=10.0)[0]
+        rospy.loginfo("Waiting for "+self.camera_name+" sensor to be available in ROS")
         rospy.wait_for_service(camera_info_service,timeout=10.0)
 
         self.use_rgb = False
