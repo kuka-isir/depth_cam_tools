@@ -38,7 +38,7 @@ class RGBDSensor:
     __metaclass__ = ABCMeta
     
     @classmethod
-    def __init__(self, camera_name, rgb_topic = '', depth_topic = '', ir_topic = '', use_depth_registered = False, queue_size=1, compression=False):
+    def __init__(self, camera_name, depth_optical_frame ,rgb_topic = '', depth_topic = '', ir_topic = '', use_depth_registered = False, queue_size=1, compression=False):
     
         if not camera_name[0]=="/":
             camera_name = "/"+camera_name
@@ -69,7 +69,7 @@ class RGBDSensor:
         self.ir_topic = ir_topic
             
         ## Frames
-        self.depth_optical_frame = camera_name+'_depth_optical_frame'
+        self.depth_optical_frame = depth_optical_frame 
         self.link_frame = camera_name+'_link'
         self.rgb_optical_frame = camera_name+'_rgb_optical_frame'
 

@@ -31,6 +31,8 @@ class XtionProLive(RGBDSensor):
         
         ir_topic = ''
             
-        super(RGBDSensor, RGBDSensor(camera_name, rgb_topic, depth_topic, ir_topic, use_depth_registered, queue_size, compression))
+        depth_optical_frame = camera_name+'_depth_optical_frame'
+            
+        super(RGBDSensor, RGBDSensor(camera_name, depth_optical_frame, rgb_topic, depth_topic, ir_topic, use_depth_registered, queue_size, compression))
         
         self.wait_until_ready()
