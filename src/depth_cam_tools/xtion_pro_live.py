@@ -14,7 +14,7 @@ import yaml
 import rospy
 
 class XtionProLive(RGBDSensor):
-    def __init__(self, camera_name, use_rect = True , use_depth_registered = False, queue_size=1, compression=False):
+    def __init__(self, camera_name, use_rect = True , use_ir = False, use_depth_registered = False, queue_size=1, compression=False):
         
         depth="depth"
         if use_depth_registered:
@@ -25,6 +25,8 @@ class XtionProLive(RGBDSensor):
             rect="_rect"
         
         rgb_topic = camera_name+'/rgb/image'+rect+'_color'
+        if use_ir:
+            rgb_topic = ''
         
         depth_topic = camera_name+'/'+depth+'/image'+rect+'_raw'
         if use_depth_registered:
@@ -32,9 +34,9 @@ class XtionProLive(RGBDSensor):
         
         ir_topic = camera_name+'/ir/image_raw'
         if use_rect:
-            ir_topic = camera_name+'/ir/image_rect_ir'   
-        
-        ir_topic = ''
+            ir_topic = camera_name+'/ir/image_rect_ir'
+        if not use_ir:
+            ir_topic = ''
         
         depth_optical_frame = camera_name+'_depth_optical_frame'
             

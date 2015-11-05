@@ -34,8 +34,6 @@ class Kinect1(RGBDSensor):
         if use_rect:
             ir_topic = camera_name+'/ir/image_rect_ir'   
         
-        ir_topic = ''
-        
         depth_optical_frame = camera_name+'_depth_optical_frame'
             
         depth_camera_info = self.get_camera_info(camera_name, "depth")
