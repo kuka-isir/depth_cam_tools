@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
 Created on Tue Nov  3 16:54:36 2015
@@ -11,10 +12,7 @@ import ros_image_subscriber as rib
 from geometry_msgs.msg import PointStamped
 import tf
 from threading import Thread
-from sensor_msgs.msg import CameraInfo
 import cv2
-import yaml
-import os
 import time
 
 def get_output_list(cmd,timeout=None):
@@ -38,7 +36,7 @@ class RGBDSensor:
     __metaclass__ = ABCMeta
     
     @classmethod
-    def __init__(self, camera_name, depth_optical_frame ,rgb_topic = '', depth_topic = '', ir_topic = '', use_depth_registered = False, queue_size=1, compression=False):
+    def __init__(self, camera_name, depth_camera_info, rgb_camera_info, depth_optical_frame ,rgb_topic = '', depth_topic = '', ir_topic = '', use_depth_registered = False, queue_size=1, compression=False):
     
         if not camera_name[0]=="/":
             camera_name = "/"+camera_name
@@ -69,65 +67,26 @@ class RGBDSensor:
         self.ir_topic = ir_topic
             
         ## Frames
-        self.depth_optical_frame = depth_optical_frame 
+        self.depth_optical_frame = depth_optical_frame
         self.link_frame = camera_name+'_link'
         self.rgb_optical_frame = camera_name+'_rgb_optical_frame'
 
         ## Get Intrinsics
         if self.use_depth:
-            self.depth_camera_info=self.get_camera_info(camera_name,'depth')
+            self.depth_camera_info = depth_camera_info
             self.depth_th = rib.ROSImageSubscriber(self.depth_topic,queue_size=queue_size,use_compression=compression)        
             self.depth_th.start()
         if self.use_rgb:
-            self.rgb_camera_info=self.get_camera_info(camera_name,'rgb')
+            self.rgb_camera_info = rgb_camera_info
             self.rgb_th = rib.ROSImageSubscriber(self.rgb_topic,queue_size=queue_size,use_compression=compression)
             self.rgb_th.start()
         if self.use_ir:
-            self.ir_camera_info=self.get_camera_info(camera_name,'depth')
+            self.ir_camera_info = depth_camera_info
             self.ir_th = rib.ROSImageSubscriber(self.ir_topic,queue_size=queue_size,use_compression=compression)
             self.ir_th.start()
                         
         self.tf = tf.TransformListener()
         
-    @classmethod
-    @abstractmethod
-    def get_camera_info_url(self,camera_name,img_name='depth'):
-        return rospy.get_param(camera_name+'/driver/'+img_name+'_camera_info_url').replace('file://','')
-    
-    @classmethod
-    @abstractmethod
-    def get_camera_info(self,camera_name,img_name='depth'):
-        camera_info = CameraInfo()
-        file_url = ''
-        try : 
-            file_url = self.get_camera_info_url(camera_name,img_name)
-        except Exception,e: print e
-                
-        if not os.path.exists(file_url):
-            if img_name == 'depth':
-                camera_info.K = np.array([610.183545355666, 0, 331.498179304952, 0, 610.613748569717, 257.128224589741, 0, 0, 1])
-                camera_info.D = np.array([-0.0388664532195436, 0.111397388172138, 0.00673931006062305, 0.00762574500287458, 0])
-                camera_info.P =  np.matrix([613.005981445312, 0, 334.904565660545, 0, 0, 614.685424804688, 259.144825464584, 0, 0, 0, 1, 0])
-            elif img_name == 'rgb':
-                camera_info.K = np.matrix([525.547200081387, 0, 317.00975850542, 0, 526.063977479593, 231.501564568755, 0, 0, 1])
-                camera_info.D = np.array([0.0387333787967748, -0.11681772942717, -0.000993968071341523, 0.007556327027684, 0])
-                camera_info.P =  np.matrix([523.705688476562, 0, 320.996738034948, 0, 0, 527.902526855469, 230.533531720312, 0, 0, 0, 1, 0])
-
-            rospy.logwarn( "No camera info found at url ["+file_url+"], using default values.\n Consider setting the *_info_url")
-            return camera_info
-    
-        print 'Loading camera '+img_name+' info at:',file_url
-        with open(file_url, 'r') as f:
-            calib = yaml.safe_load(f.read())
-            camera_info.K = np.matrix(calib["camera_matrix"]["data"])
-            camera_info.D = np.array(calib["distortion_coefficients"]["data"])
-            camera_info.R = np.matrix(calib["rectification_matrix"]["data"])
-            camera_info.P = np.matrix(calib["projection_matrix"]["data"])
-            camera_info.height = calib["image_height"]
-            camera_info.width = calib["image_width"]
-            print camera_info
-        return camera_info
-
     @classmethod
     @abstractmethod
     def mouse_callback_spin_once(self):
