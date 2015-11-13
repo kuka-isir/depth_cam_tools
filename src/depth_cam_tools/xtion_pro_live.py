@@ -14,7 +14,7 @@ import yaml
 import rospy
 
 class XtionProLive(RGBDSensor):
-    def __init__(self, camera_name, use_rect = True , use_ir = False, use_depth_registered = False, queue_size=1, compression=False):
+    def __init__(self, camera_name, use_rect = True , use_ir = False, depth_topic = '', use_depth_registered = False, queue_size=1, compression=False):
         
         depth="depth"
         if use_depth_registered:
@@ -28,9 +28,11 @@ class XtionProLive(RGBDSensor):
         if use_ir:
             rgb_topic = ''
         
-        depth_topic = camera_name+'/'+depth+'/image'+rect+'_raw'
-        if use_depth_registered:
-            depth_topic = camera_name+'/depth_registered/image_raw' 
+        if depth_topic == '':
+            if use_depth_registered:
+                depth_topic = camera_name+'/depth_registered/image_raw' 
+            else:
+                depth_topic = camera_name+'/'+depth+'/image'+rect+'_raw'
         
         ir_topic = camera_name+'/ir/image_raw'
         if use_rect:
@@ -56,6 +58,8 @@ class XtionProLive(RGBDSensor):
                 
         if not os.path.exists(file_url):
             print 'ERROR: Could not read '+ camera_name+ ' '+img_name +'_camera_info'
+            print '     Calibrate the sensor and try again !'
+            exit(0)
             return
     
         print 'Loading camera '+img_name +'_camera_info for '+camera_name+' at:',file_url

@@ -14,20 +14,21 @@ import yaml
 import rospy
 
 class Kinect2(RGBDSensor):
-    def __init__(self, camera_name, use_rect = True , queue_size=1, compression=False):
+    def __init__(self, camera_name, use_rect = True, depth_topic = '' , queue_size=1, compression=False):
                     
         rect=""
         if use_rect:
             rect="_rect"
         
         rgb_topic = camera_name+'/sd/image_color'+rect
-        depth_topic = camera_name+'/sd/image_depth'+rect
+        if depth_topic == '':
+            depth_topic = camera_name+'/sd/image_depth'+rect
         ir_topic = camera_name+'/sd/image_ir'+rect        
         
         depth_optical_frame = camera_name+'_ir_optical_frame'
             
         depth_camera_info = self.get_camera_info(camera_name, "ir")
-        rgb_camera_info = self.get_camera_info(camera_name, "rgb")
+        rgb_camera_info = self.get_camera_info(camera_name, "color")
             
         super(RGBDSensor, RGBDSensor(camera_name, depth_camera_info, rgb_camera_info, depth_optical_frame, rgb_topic, depth_topic, ir_topic, True, queue_size, compression))
         
@@ -43,6 +44,8 @@ class Kinect2(RGBDSensor):
 
         if not os.path.exists(file_url):
             print 'ERROR: Could not read '+ camera_name+ ' '+img_name +'_camera_info'
+            print '     Calibrate the sensor and try again !'
+            exit(0)
             return
     
         print 'Loading camera '+img_name+' info at:',file_url
