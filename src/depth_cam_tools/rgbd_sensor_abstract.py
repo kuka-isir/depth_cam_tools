@@ -36,7 +36,7 @@ class RGBDSensor:
     __metaclass__ = ABCMeta
     
     @classmethod
-    def __init__(self, camera_name, depth_camera_info, rgb_camera_info, depth_optical_frame ,rgb_topic = '', depth_topic = '', ir_topic = '', use_depth_registered = False, queue_size=1, compression=False):
+    def __init__(self, camera_name, depth_camera_info, rgb_camera_info, depth_optical_frame ,rgb_topic = '', depth_topic = '', ir_topic = '', queue_size=1, compression=False):
     
         if not camera_name[0]=="/":
             camera_name = "/"+camera_name
@@ -58,8 +58,6 @@ class RGBDSensor:
         self.use_ir = False
         if ir_topic is not '':
             self.use_ir = True
-            
-        self.use_depth_registered = use_depth_registered
         
         ## Topics
         self.rgb_topic = rgb_topic
@@ -195,10 +193,7 @@ class RGBDSensor:
             print e
             
         if transform_to_camera_link:
-            if not self.use_depth_registered:
-                return self.transform_point(result,self.link_frame,self.depth_optical_frame)
-            else:
-                return self.transform_point(result,self.link_frame,self.rgb_optical_frame)
+            return self.transform_point(result,self.link_frame,self.depth_camera_info.header.frame_id)
         else:
             return np.array(result)
     
@@ -227,7 +222,7 @@ class RGBDSensor:
             print e
             
         if transform_to_camera_link:
-            return self.transform_point(result,self.link_frame,self.depth_optical_frame)
+            return self.transform_point(result,self.link_frame,self.ir_camera_info.header.frame_id)
         else:
             return np.array(result)
     
@@ -256,7 +251,7 @@ class RGBDSensor:
             print e
             
         if transform_to_camera_link:
-            return self.transform_point(result,self.link_frame,self.rgb_optical_frame)
+            return self.transform_point(result,self.link_frame,self.rgb_camera_info.header.frame_id)
         else:
             return np.array(result)
             
