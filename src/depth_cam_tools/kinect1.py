@@ -43,7 +43,13 @@ class Kinect1(RGBDSensor):
         depth_optical_frame = camera_name+'_depth_optical_frame'
             
         depth_camera_info = self.get_camera_info(camera_name, "depth")
+        if use_depth_registered:
+            depth_camera_info.header.frame_id = camera_name+'_rgb_optical_frame'            
+        else:
+            depth_camera_info.header.frame_id = depth_optical_frame
+            
         rgb_camera_info = self.get_camera_info(camera_name, "rgb")
+        rgb_camera_info.header.frame_id = camera_name+'_rgb_optical_frame'
             
         super(RGBDSensor, RGBDSensor(camera_name, depth_camera_info, rgb_camera_info, depth_optical_frame, rgb_topic, depth_topic, ir_topic, queue_size, compression))
         

@@ -41,6 +41,15 @@ class XtionProLive(RGBDSensor):
             ir_topic = ''
         
         depth_optical_frame = camera_name+'_depth_optical_frame'
+        
+        depth_camera_info = self.get_camera_info(camera_name, "depth")
+        if use_depth_registered:
+            depth_camera_info.header.frame_id = camera_name+'_rgb_optical_frame'            
+        else:
+            depth_camera_info.header.frame_id = depth_optical_frame
+            
+        rgb_camera_info = self.get_camera_info(camera_name, "rgb")
+        rgb_camera_info.header.frame_id = camera_name+'_rgb_optical_frame'
             
         depth_camera_info = self.get_camera_info(camera_name, "depth")
         rgb_camera_info = self.get_camera_info(camera_name, "rgb")
