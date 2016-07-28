@@ -51,9 +51,6 @@ class XtionProLive(RGBDSensor):
         rgb_camera_info = self.get_camera_info(camera_name, "rgb")
         rgb_camera_info.header.frame_id = camera_name+'_rgb_optical_frame'
             
-        depth_camera_info = self.get_camera_info(camera_name, "depth")
-        rgb_camera_info = self.get_camera_info(camera_name, "rgb")
-            
         super(RGBDSensor, RGBDSensor(camera_name, depth_camera_info, rgb_camera_info, depth_optical_frame, rgb_topic, depth_topic, ir_topic, queue_size, compression))
         
         self.wait_until_ready()
