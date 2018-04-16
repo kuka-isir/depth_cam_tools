@@ -42,7 +42,7 @@ class Kinect1(RGBDSensor):
         
         depth_optical_frame = camera_name+'_depth_optical_frame'
             
-        depth_camera_info = self.get_camera_info(camera_name, "depth")
+        depth_camera_info = self.get_camera_info(camera_name, 'depth')
         if use_depth_registered:
             depth_camera_info.header.frame_id = camera_name+'_rgb_optical_frame'            
         else:
@@ -59,11 +59,13 @@ class Kinect1(RGBDSensor):
         camera_info = CameraInfo()
         file_url = ''
         try : 
+	    print 'camera_name: '+camera_name
+	    print 'img_name: '+img_name
             file_url = rospy.get_param(camera_name+'/driver/'+img_name+'_camera_info_url').replace('file://','')
         except Exception,e: print e
                 
         if not os.path.exists(file_url):
-            print 'ERROR: Could not read '+ camera_name+ ' '+img_name +'_camera_info'
+            print 'ERROR: Could not read '+camera_name+'/driver/'+img_name+'_camera_info_url'
             print '     Calibrate the sensor and try again !'
             exit(0)
             return

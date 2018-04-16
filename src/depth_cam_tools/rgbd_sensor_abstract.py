@@ -184,12 +184,16 @@ class RGBDSensor:
         
         try:
             if depth_img is not None:
-                z = (depth_img[y][x])[0]/1000.0
+                z = (depth_img[y][x])/1000.0
+
+
                 if (z == 0):
                     return [np.nan]*3
                               
                 result = [(x - cx_d) * z / fx_d ,(y - cy_d) * z / fy_d, z ]
-        except Exception,e: 
+            else:
+                print 'depth_img is NONE'
+        except Exception,e:
             print e
             
         if transform_to_camera_link:
